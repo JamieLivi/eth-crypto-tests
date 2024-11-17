@@ -6,7 +6,7 @@ import { concatUint8Arrays } from './concat-uint8-arrays';
 import { hmacSha256Sign } from './sign';
 import { aes256CbcEncrypt } from './aes-encrypt';
 import { aes256CbcDecrypt } from './aes-decrypt';
-import { randomBytes } from 'ethers';
+import { getRandomBytesSync as randomBytes } from 'ethereum-cryptography/random.js';
 
 /** See:
  *  https://github.com/bitchan/eccrypto

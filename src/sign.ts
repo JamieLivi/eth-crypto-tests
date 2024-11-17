@@ -1,7 +1,8 @@
 import { secp256k1 } from 'ethereum-cryptography/secp256k1.js';
+import { hmac } from '@noble/hashes/hmac';
+import { sha256 } from '@noble/hashes/sha2';
 import { hexToBytes } from 'ethereum-cryptography/utils';
 import { addLeading0x, stripHexPrefix } from './util';
-import { computeHmac } from 'ethers';
 
 /**
  * signs the given message
@@ -21,6 +22,6 @@ export const sign = (privateKey: string, hash: string) => {
 };
 
 export const hmacSha256Sign = (key: Uint8Array, msg: Uint8Array) => {
-  const result = computeHmac('sha256', key, msg);
-  return hexToBytes(result);
+  const result = hmac(sha256, key, msg);
+  return result;
 };

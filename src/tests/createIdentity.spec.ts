@@ -1,4 +1,33 @@
+import { getRandomBytesSync } from 'ethereum-cryptography/random';
 import { createIdentity, createPrivateKey, DEFAULT_ENTROPY_BYTES } from '../createIdentity';
+
+describe('createPrivateKey tests', () => {
+  it('should create a private key without entropy', () => {
+    const privateKey = createPrivateKey();
+    expect(privateKey).toMatch(/^0x[0-9a-fA-F]+$/);
+    expect(privateKey.length).toBe(66);
+  });
+
+  it('should throw an error if entropy is not a Uint8Array', () => {
+    expect(() => createPrivateKey('invalid entropy' as any)).toThrow(
+      `entropy must be a Uint8Array of at least ${DEFAULT_ENTROPY_BYTES} bytes`,
+    );
+  });
+
+  it('should throw an error if entropy length is less than DEFAULT_ENTROPY_BYTES', () => {
+    const shortEntropy = new Uint8Array(DEFAULT_ENTROPY_BYTES - 1);
+    expect(() => createPrivateKey(shortEntropy)).toThrow(
+      `entropy must be a Uint8Array of at least ${DEFAULT_ENTROPY_BYTES} bytes`,
+    );
+  });
+
+  it('should create a private key from valid entropy', () => {
+    const validEntropy = getRandomBytesSync(DEFAULT_ENTROPY_BYTES);
+    const privateKey = createPrivateKey(validEntropy);
+    expect(privateKey).toMatch(/^0x[0-9a-fA-F]+$/);
+    expect(privateKey.length).toBe(66);
+  });
+});
 
 describe('createIdentity tests', () => {
   it('should return an object with privateKey and publicKey', async () => {
@@ -44,7 +73,7 @@ describe('createIdentity tests', () => {
   });
 
   it('should create an identity from valid entropy', () => {
-    const validEntropy = new Uint8Array(DEFAULT_ENTROPY_BYTES);
+    const validEntropy = getRandomBytesSync(DEFAULT_ENTROPY_BYTES);
     const identity = createIdentity(validEntropy);
 
     expect(identity).toHaveProperty('privateKey');

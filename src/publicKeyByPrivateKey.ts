@@ -1,5 +1,7 @@
-import { SigningKey } from 'ethers';
-import { addLeading0x, stripHexPrefix } from './util';
+import { stripHexPrefix } from './util';
+import { secp256k1 } from 'ethereum-cryptography/secp256k1.js';
+import { bytesToHex } from 'ethereum-cryptography/utils';
+import { decompress } from './decompress';
 
 /**
  * Generate publicKey from the privateKey.
@@ -7,9 +9,10 @@ import { addLeading0x, stripHexPrefix } from './util';
  * where 04 has stripped from left
  * @returns {string}
  */
+
 export const publicKeyByPrivateKey = (privateKey: string) => {
-  const key = addLeading0x(privateKey);
-  const sign = new SigningKey(key);
-  const publicKey = SigningKey.computePublicKey(sign.publicKey, false);
-  return stripHexPrefix(publicKey).slice(2);
+  const key = stripHexPrefix(privateKey);
+  const publicKey = secp256k1.getPublicKey(key, false);
+  const hex = bytesToHex(publicKey);
+  return decompress(hex);
 };
