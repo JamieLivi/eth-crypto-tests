@@ -3,9 +3,7 @@ name: checks
 on:
   push:
 
-permissions:
-  pages: write
-  id-token: write
+permissions: write-all
 
 jobs:
   lint:
