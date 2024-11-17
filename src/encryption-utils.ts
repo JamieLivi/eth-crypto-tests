@@ -9,11 +9,16 @@ import { concatUint8Arrays } from './util';
 
 /** See:
  *  https://github.com/bitchan/eccrypto
- *  https://cryptojs.gitbook.io/docs#custom-key-and-iv
- *
  */
 
-export const encrypt = async (publicKeyTo: string, msg: string) => {
+/**
+ * Encrypts a message using the recipient's public key.
+ * @param {string} publicKeyTo - The recipient's public key.
+ * @param {string} msg - The message to encrypt.
+ * @returns {Encrypted} The encrypted message.
+ */
+
+export const encrypt = (publicKeyTo: string, msg: string): Encrypted => {
   const ephemPrivateKey = randomBytes(32);
   const iv = randomBytes(16);
   const ephemPublicKey = secp256k1.getPublicKey(ephemPrivateKey, false);
@@ -25,13 +30,21 @@ export const encrypt = async (publicKeyTo: string, msg: string) => {
   const data = aesEncrypt(message, encryptionKey, iv, 'aes-256-cbc');
   const dataToMac = concatUint8Arrays([iv, ephemPublicKey, data]);
   const mac = hmacSha256Sign(macKey, dataToMac);
+
   return {
-    iv: iv,
-    ephemPublicKey: ephemPublicKey,
+    iv: bytesToHex(iv),
+    ephemPublicKey: bytesToHex(ephemPublicKey),
     ciphertext: bytesToHex(data),
-    mac: mac,
+    mac: bytesToHex(mac),
   };
 };
+
+/**
+ * Decrypts an encrypted message using the recipient's private key.
+ * @param {string} privateKey - The recipient's private key.
+ * @param {Encrypted} opts - The encrypted message.
+ * @returns {string} The decrypted message.
+ */
 
 export const decrypt = (privateKey: string, opts: Encrypted) => {
   const sharedSecret = secp256k1.getSharedSecret(hexToBytes(privateKey), opts.ephemPublicKey, true).slice(1);

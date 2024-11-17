@@ -48,7 +48,7 @@ describe('hmacSha256Sign function tests', () => {
   });
 
   it('should throw an error for invalid key type', () => {
-    const invalidKey = 123 as any;
-    expect(() => hmacSha256Sign(invalidKey, new TextEncoder().encode(message))).toThrow();
+    // @ts-expect-error testing invalid input
+    expect(() => hmacSha256Sign(123, new TextEncoder().encode(message))).toThrow();
   });
 });

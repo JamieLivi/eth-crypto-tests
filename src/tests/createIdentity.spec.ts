@@ -9,7 +9,8 @@ describe('createPrivateKey tests', () => {
   });
 
   it('should throw an error if entropy is not a Uint8Array', () => {
-    expect(() => createPrivateKey('invalid entropy' as any)).toThrow(
+    // @ts-expect-error testing invalid input
+    expect(() => createPrivateKey('invalid entropy')).toThrow(
       `entropy must be a Uint8Array of at least ${DEFAULT_ENTROPY_BYTES} bytes`,
     );
   });

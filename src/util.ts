@@ -32,13 +32,13 @@ export const stripHexPrefix = (str: string): string => {
  * @param  length
  * @returns  output the string is a hex string
  */
-export function isHexString(value: string, length?: number): boolean {
+export const isHexString = (value: string, length?: number): boolean => {
   if (typeof value !== 'string' || !value.match(/^0x[0-9A-Fa-f]*$/)) return false;
 
   if (length && value.length !== 2 + 2 * length) return false;
 
   return true;
-}
+};
 
 /**
  * Adds '0x' to a given `String` if not present
