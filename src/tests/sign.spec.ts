@@ -14,8 +14,18 @@ describe('sign function', () => {
   });
 
   it('should throw an error for invalid private key', () => {
+    const invalidPrivateKey = 'invalid';
+    expect(() => sign(invalidPrivateKey, HASH)).toThrow();
+  });
+
+  it('should throw an error for invalid hash', () => {
     const invalidHash = 'invalid';
-    expect(() => sign(invalidHash, HASH)).toThrow();
+    expect(() => sign(PRIVATE_KEY, invalidHash)).toThrow();
+  });
+
+  it('should throw an error for hash with incorrect length', () => {
+    const shortHash = '0x1234';
+    expect(() => sign(PRIVATE_KEY, shortHash)).toThrow();
   });
 });
 

@@ -1,11 +1,10 @@
 import { sha512 } from 'ethereum-cryptography/sha512.js';
 import { secp256k1 } from 'ethereum-cryptography/secp256k1';
-import { hexToBytes, bytesToHex } from 'ethereum-cryptography/utils.js';
+import { getRandomBytesSync as randomBytes } from 'ethereum-cryptography/random.js';
+import { hexToBytes, bytesToHex, utf8ToBytes, bytesToUtf8 } from 'ethereum-cryptography/utils.js';
+import { encrypt as aesEncrypt, decrypt as aesDecrypt } from 'ethereum-cryptography/aes.js';
 import { Encrypted } from './types';
 import { hmacSha256Sign } from './sign';
-import { aes256CbcEncrypt } from './aes-encrypt';
-import { aes256CbcDecrypt } from './aes-decrypt';
-import { getRandomBytesSync as randomBytes } from 'ethereum-cryptography/random.js';
 import { concatUint8Arrays } from './util';
 
 /** See:
@@ -22,14 +21,14 @@ export const encrypt = async (publicKeyTo: string, msg: string) => {
   const hash = sha512(sharedSecret);
   const encryptionKey = hash.subarray(0, 32);
   const macKey = hash.subarray(32);
-  const ivHex = bytesToHex(iv);
-  const data = aes256CbcEncrypt(ivHex, encryptionKey, msg);
-  const dataToMac = concatUint8Arrays([iv, ephemPublicKey, hexToBytes(data)]);
+  const message = utf8ToBytes(msg);
+  const data = aesEncrypt(message, encryptionKey, iv, 'aes-256-cbc');
+  const dataToMac = concatUint8Arrays([iv, ephemPublicKey, data]);
   const mac = hmacSha256Sign(macKey, dataToMac);
   return {
     iv: iv,
     ephemPublicKey: ephemPublicKey,
-    ciphertext: data,
+    ciphertext: bytesToHex(data),
     mac: mac,
   };
 };
@@ -38,6 +37,8 @@ export const decrypt = (privateKey: string, opts: Encrypted) => {
   const sharedSecret = secp256k1.getSharedSecret(hexToBytes(privateKey), opts.ephemPublicKey, true).slice(1);
   const hash = sha512(sharedSecret);
   const encryptionKey = hash.subarray(0, 32);
-  const decrypted = aes256CbcDecrypt(opts.iv, encryptionKey, opts.ciphertext);
-  return decrypted;
+  const ciphertext = hexToBytes(opts.ciphertext);
+  const iv = hexToBytes(opts.iv);
+  const decrypted = aesDecrypt(ciphertext, encryptionKey, iv, 'aes-256-cbc');
+  return bytesToUtf8(decrypted);
 };
