@@ -53,6 +53,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "eslint \"src/**/*.{ts,js,json}\"",
+    "typecheck": "tsc --noEmit",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint:fix": "npm run lint -- --fix",
     "build:dev": "microbundle watch",
@@ -97,8 +98,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "crypto-js": "^4.2.0",
-    "ethereum-cryptography": "^2.2.1",
-    "ethers": "^6.13.1"
-  }
+    "ethereum-cryptography": "^3.0.0"
+  },
+  "packageManager": "yarn@1.22.22"
 }

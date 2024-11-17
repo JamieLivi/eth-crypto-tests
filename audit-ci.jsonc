@@ -1,7 +1,0 @@
-{
-  "high": true,
-  "moderate": true,
-  "low": true,
-  "report-type": "summary",
-  "allowlist": ["GHSA-952p-6rrq-rcjv", "GHSA-gcx4-mw62-g8wm"]
-}

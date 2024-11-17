@@ -22,7 +22,7 @@ const TEST_DATA = [
   },
 ];
 
-describe('NEW FUNCTIONS - Encryption and decryption tests', () => {
+describe('Encryption and decryption tests', () => {
   test.each(TEST_DATA)(
     'should encrypt with public key then decrypt with private key and get same message',
     async (data) => {
