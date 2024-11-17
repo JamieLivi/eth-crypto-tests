@@ -3,6 +3,10 @@ name: checks
 on:
   push:
 
+permissions:
+  pages: write
+  id-token: write
+
 jobs:
   lint:
     name: lint
@@ -10,6 +14,8 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -39,3 +45,31 @@ jobs:
 
       - name: Run tests
         run: npm run test
+
+      - name: ⚙️ Generating coverage badges
+        uses: jpb06/coverage-badges-action@latest
+        with:
+          branches: '*'
+
+      - name: Upload assets
+        id: deployment
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: coverage/lcov-report
+          name: results
+
+  deploy-pages:
+    needs: tests
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        continue-on-error: true
+        with:
+          artifact_name: results

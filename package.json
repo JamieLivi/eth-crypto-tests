@@ -1,16 +1,11 @@
 {
-  "name": "eth-crypto-js",
+  "name": "eth-crypto-tests",
   "version": "0.2.18",
-  "description": "Cryptographic javascript-functions for ethereum and tutorials on how to use them together with web3js and solidity",
-  "author": "Olivier Esuka <oesukan@gmail.com> (https://oesukam.me)",
+  "description": "Testing interoperability of cryptographic functions from eth-crypto and eth-crypto-js",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/oesukam/eth-crypto-js/issues"
-  },
-  "homepage": "https://github.com/oesukam/eth-crypto-js#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/oesukam/eth-crypto-js.git"
+    "url": "git+https://github.com/JamieLivi/eth-crypto-tests.git"
   },
   "main": "./dist/index.js",
   "module": "./dist/index.esm.js",
