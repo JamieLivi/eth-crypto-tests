@@ -1,6 +1,5 @@
 import { getRandomBytesSync as randomBytes } from 'ethereum-cryptography/random.js';
-import { addLeading0x, stripHexPrefix } from './util';
-import { concatUint8Arrays } from './concat-uint8-arrays';
+import { addLeading0x, stripHexPrefix, concatUint8Arrays } from './util';
 import { publicKeyByPrivateKey } from './publicKeyByPrivateKey';
 import { bytesToHex } from 'ethereum-cryptography/utils';
 import { keccak256 } from 'ethereum-cryptography/keccak';

@@ -1,4 +1,4 @@
-import { decompress } from './decompress';
+import { decompress } from './util';
 import { encrypt } from './encryption-utils';
 import { bytesToHex } from 'ethereum-cryptography/utils';
 

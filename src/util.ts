@@ -1,3 +1,5 @@
+import { hexToBytes } from 'ethereum-cryptography/utils';
+
 /**
  * Returns a `Boolean` on whether or not the a `String` starts with '0x'
  * @param str the string input value
@@ -47,4 +49,28 @@ export function isHexString(value: string, length?: number): boolean {
 export const addLeading0x = (str: string) => {
   if (!str.startsWith('0x')) return '0x' + str;
   else return str;
+};
+
+export const decompress = (startsWith02Or03: string) => {
+  const testByteArray = hexToBytes(startsWith02Or03);
+  let startsWith04 = startsWith02Or03;
+  if (testByteArray.length === 64) {
+    startsWith04 = '04' + startsWith02Or03;
+  }
+  return startsWith04.substring(2);
+};
+
+/** Helper function to concat UInt8Arrays mimicking the behaviour of the
+ *  Buffer.concat function in Node.js
+ */
+
+export const concatUint8Arrays = (uint8arrays: Uint8Array[]) => {
+  const totalLength = uint8arrays.reduce((total, uint8array) => total + uint8array.byteLength, 0);
+  const result = new Uint8Array(totalLength);
+  let offset = 0;
+  uint8arrays.forEach((uint8array) => {
+    result.set(uint8array, offset);
+    offset += uint8array.byteLength;
+  });
+  return result;
 };

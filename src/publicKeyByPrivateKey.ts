@@ -1,7 +1,6 @@
-import { stripHexPrefix } from './util';
+import { stripHexPrefix, decompress } from './util';
 import { secp256k1 } from 'ethereum-cryptography/secp256k1.js';
 import { bytesToHex } from 'ethereum-cryptography/utils';
-import { decompress } from './decompress';
 
 /**
  * Generate publicKey from the privateKey.

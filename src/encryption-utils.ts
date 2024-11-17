@@ -2,11 +2,11 @@ import { sha512 } from 'ethereum-cryptography/sha512.js';
 import { secp256k1 } from 'ethereum-cryptography/secp256k1';
 import { hexToBytes, bytesToHex } from 'ethereum-cryptography/utils.js';
 import { Encrypted } from './types';
-import { concatUint8Arrays } from './concat-uint8-arrays';
 import { hmacSha256Sign } from './sign';
 import { aes256CbcEncrypt } from './aes-encrypt';
 import { aes256CbcDecrypt } from './aes-decrypt';
 import { getRandomBytesSync as randomBytes } from 'ethereum-cryptography/random.js';
+import { concatUint8Arrays } from './util';
 
 /** See:
  *  https://github.com/bitchan/eccrypto
