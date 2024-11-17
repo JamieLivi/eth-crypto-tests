@@ -27,6 +27,7 @@ describe('NEW FUNCTIONS - Encryption and decryption tests', () => {
     'should encrypt with public key then decrypt with private key and get same message',
     async (data) => {
       const encrypted = await encryptWithPublicKey(data.publicKey, data.message);
+      console.log('🚀 ~ encrypted:', encrypted);
       const decrypted = await decryptWithPrivateKey(data.privateKey, encrypted);
       expect(decrypted).toBe(data.message);
     },
