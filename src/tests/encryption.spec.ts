@@ -1,5 +1,11 @@
 import { encryptWithPublicKey } from '../encryptWithPublicKey';
 import { decryptWithPrivateKey } from '../decryptWithPrivateKey';
+import {
+  encryptWithPublicKey as encryptWithPublicKeyEthCrypto,
+  decryptWithPrivateKey as decryptWithPrivateKeyEthCrypto,
+} from 'eth-crypto';
+import { getRandomBytesSync } from 'ethereum-cryptography/random';
+import { bytesToHex } from 'ethereum-cryptography/utils';
 
 const TEST_DATA = [
   {
@@ -24,11 +30,56 @@ const TEST_DATA = [
 
 describe('Encryption and decryption tests', () => {
   test.each(TEST_DATA)(
-    'should encrypt with public key then decrypt with private key and get same message',
+    'should encrypt with public key then decrypt with private key and get same message using local functions and eth-crypto',
     async (data) => {
-      const encrypted = await encryptWithPublicKey(data.publicKey, data.message);
-      const decrypted = await decryptWithPrivateKey(data.privateKey, encrypted);
+      const encrypted = encryptWithPublicKey(data.publicKey, data.message);
+      const decrypted = decryptWithPrivateKey(data.privateKey, encrypted);
       expect(decrypted).toBe(data.message);
+      const ethCryptoEncrypted = await encryptWithPublicKeyEthCrypto(data.publicKey, data.message);
+      const ethCryptoDecrypted = await decryptWithPrivateKeyEthCrypto(data.privateKey, ethCryptoEncrypted);
+      expect(ethCryptoDecrypted).toBe(data.message);
+    },
+  );
+
+  test.each(TEST_DATA)(
+    'should encrypt with public key specifying initialization vector then decrypt with private key and get same message using local functions and eth-crypto',
+    async (data) => {
+      const iv = getRandomBytesSync(16);
+      const encrypted = encryptWithPublicKey(data.publicKey, data.message, {
+        iv: bytesToHex(iv),
+      });
+      const ethCryptoEncrypted = await encryptWithPublicKeyEthCrypto(data.publicKey, data.message, {
+        iv: Buffer.from(iv),
+      });
+      const ethCryptoDecrypted = await decryptWithPrivateKeyEthCrypto(data.privateKey, ethCryptoEncrypted);
+      expect(ethCryptoDecrypted).toBe(decryptWithPrivateKey(data.privateKey, encrypted));
+    },
+  );
+
+  test.each(TEST_DATA)(
+    'should encrypt with public key specifying ephemeral private key and iv and get identical Encrypted object (ciphertext and mac) using local functions and eth crypto functions',
+    async (data) => {
+      const ephemPrivateKey = getRandomBytesSync(32);
+      const iv = getRandomBytesSync(16);
+      const encrypted = encryptWithPublicKey(data.publicKey, data.message, {
+        ephemPrivateKey: bytesToHex(ephemPrivateKey),
+        iv: bytesToHex(iv),
+      });
+
+      const ethCryptoEncrypted = await encryptWithPublicKeyEthCrypto(data.publicKey, data.message, {
+        ephemPrivateKey: Buffer.from(ephemPrivateKey),
+        iv: Buffer.from(iv),
+      });
+
+      expect(ethCryptoEncrypted.ciphertext).toEqual(encrypted.ciphertext);
+      expect(ethCryptoEncrypted.iv).toEqual(encrypted.iv);
+      expect(ethCryptoEncrypted.ephemPublicKey).toEqual(encrypted.ephemPublicKey);
+      expect(ethCryptoEncrypted.mac).toEqual(encrypted.mac);
+
+      expect(ethCryptoEncrypted).toEqual(encrypted);
+
+      const ethCryptoDecrypted = await decryptWithPrivateKeyEthCrypto(data.privateKey, ethCryptoEncrypted);
+      expect(ethCryptoDecrypted).toEqual(decryptWithPrivateKey(data.privateKey, encrypted));
     },
   );
 });

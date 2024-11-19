@@ -1,4 +1,5 @@
 import { recoverPublicKey } from '../recoverPublicKey';
+import { recoverPublicKey as recoverPublicKeyEthCrypto } from 'eth-crypto';
 
 const DATA = [
   {
@@ -28,8 +29,13 @@ const DATA = [
 ];
 
 describe('recoverPublicKey function', () => {
-  test.each(DATA)('should recover the correct public key for a given signature and hash', async (data) => {
-    const publicKey = recoverPublicKey(data.signature, data.messageHash);
-    expect(publicKey).toBe(data.pair.publicKey);
-  });
+  test.each(DATA)(
+    'should recover the correct public key for a given signature and hash using both local and eth-crypto methods an get same result',
+    async (data) => {
+      const publicKey = recoverPublicKey(data.signature, data.messageHash);
+      expect(publicKey).toBe(data.pair.publicKey);
+      const ethCryptoPublicKey = recoverPublicKeyEthCrypto(data.signature, data.messageHash);
+      expect(ethCryptoPublicKey).toBe(data.pair.publicKey);
+    },
+  );
 });

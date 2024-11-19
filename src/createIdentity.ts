@@ -16,8 +16,8 @@ export const createPrivateKey = (entropy?: Uint8Array) => {
     if (!(entropy instanceof Uint8Array) || entropy.length < DEFAULT_ENTROPY_BYTES) {
       throw new Error(`entropy must be a Uint8Array of at least ${DEFAULT_ENTROPY_BYTES} bytes`);
     }
-
-    return addLeading0x(bytesToHex(entropy));
+    const outerHex = keccak256(entropy);
+    return addLeading0x(bytesToHex(outerHex));
   } else {
     const innerHex = keccak256(concatUint8Arrays([randomBytes(32), randomBytes(32)]));
     const middleHex = concatUint8Arrays([concatUint8Arrays([randomBytes(32), innerHex]), randomBytes(32)]);
@@ -37,7 +37,7 @@ export const createIdentity = (entropy?: Uint8Array) => {
   const walletPublicKey = publicKeyByPrivateKey(privateKey);
   const identity = {
     privateKey: privateKey,
-    publicKey: stripHexPrefix(walletPublicKey).slice(2),
+    publicKey: stripHexPrefix(walletPublicKey),
   };
   return identity;
 };

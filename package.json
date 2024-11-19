@@ -93,7 +93,9 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "ethereum-cryptography": "^3.0.0"
+    "crypto-js": "^4.2.0",
+    "eth-crypto": "2.6.0",
+    "ethereum-cryptography": "3.0.0"
   },
   "packageManager": "yarn@1.22.22"
 }

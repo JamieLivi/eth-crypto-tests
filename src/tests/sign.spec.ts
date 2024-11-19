@@ -1,4 +1,5 @@
 import { sign, hmacSha256Sign } from '../sign';
+import { sign as ethCryptoSign } from 'eth-crypto';
 import { bytesToHex, hexToBytes } from 'ethereum-cryptography/utils';
 
 const PRIVATE_KEY = '0xb966663733f9dacb81ccf336508bb334cca74136f6063783f737fb4c12c96c63';
@@ -8,9 +9,11 @@ const OUTPUT =
   '0xa222db3e921f6c3f9fc5f11a75868b1b50343885e38f5b2644a7dd49b6566c4c61903c65e439bc19cf6f079687785f60a5e17185af7420674265c7c95e21a2401b';
 
 describe('sign function', () => {
-  it('should return correct output for correct input', () => {
+  it('should return correct output for correct input using both local and eth-crypto functions', () => {
     const signature = sign(PRIVATE_KEY, HASH);
     expect(signature).toEqual(OUTPUT);
+    const ethCryptoSignature = ethCryptoSign(PRIVATE_KEY, HASH);
+    expect(ethCryptoSignature).toEqual(OUTPUT);
   });
 
   it('should throw an error for invalid private key', () => {

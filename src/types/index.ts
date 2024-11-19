@@ -4,3 +4,8 @@ export interface Encrypted {
   mac: string;
   ciphertext: string;
 }
+
+export type EncryptionOptions = {
+  iv?: string;
+  ephemPrivateKey?: string;
+};
