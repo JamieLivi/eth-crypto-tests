@@ -1,11 +1,11 @@
 import { sha512 } from 'ethereum-cryptography/sha512.js';
 import { secp256k1 } from 'ethereum-cryptography/secp256k1';
 import { getRandomBytesSync as randomBytes } from 'ethereum-cryptography/random.js';
-import { hexToBytes, bytesToHex, utf8ToBytes, bytesToUtf8 } from 'ethereum-cryptography/utils.js';
+import { hexToBytes, bytesToHex, bytesToUtf8 } from 'ethereum-cryptography/utils.js';
 import { encrypt as aesEncrypt, decrypt as aesDecrypt } from 'ethereum-cryptography/aes.js';
 import { Encrypted, EncryptionOptions } from './types';
 import { hmacSha256Sign } from './sign';
-import { concatUint8Arrays } from './util';
+import { concatUint8Arrays, utf8ToBytes } from './util';
 
 /** See:
  *  https://github.com/bitchan/eccrypto
@@ -21,6 +21,7 @@ import { concatUint8Arrays } from './util';
 export const encrypt = (publicKeyTo: string, msg: string, options?: EncryptionOptions): Encrypted => {
   const ephemPrivateKey = options?.ephemPrivateKey ? hexToBytes(options.ephemPrivateKey) : randomBytes(32);
   const iv = options?.iv ? hexToBytes(options.iv) : randomBytes(16);
+
   const ephemPublicKey = secp256k1.getPublicKey(ephemPrivateKey, false);
   const sharedSecret = secp256k1.getSharedSecret(ephemPrivateKey, hexToBytes(publicKeyTo), true).slice(1);
   const hash = sha512(sharedSecret);

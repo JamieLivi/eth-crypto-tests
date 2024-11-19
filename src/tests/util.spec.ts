@@ -1,4 +1,7 @@
-import { isHexPrefixed, stripHexPrefix, isHexString, addLeading0x } from '../util';
+import { isHexPrefixed, stripHexPrefix, isHexString, addLeading0x, utf8ToBytes } from '../util';
+import { bytesToHex, utf8ToBytes as utf8ToBytesEc } from 'ethereum-cryptography/utils';
+import * as bip39 from 'ethereum-cryptography/bip39/index.js';
+import { wordlist } from 'ethereum-cryptography/bip39/wordlists/english.js';
 
 describe('util functions', () => {
   describe('isHexPrefixed', () => {
@@ -65,3 +68,20 @@ describe('util functions', () => {
     });
   });
 });
+
+const testArray = Array.from({ length: 30 }, () => {
+  return bip39.generateMnemonic(wordlist);
+});
+
+test.each(testArray)(
+  'should test to see if the local utf8ToBytes function returns same result as utf8ToBytes from ethereum-cryptography for phrase %s',
+  () => {
+    const seed = bip39.generateMnemonic(wordlist, 256);
+    const bytes = utf8ToBytes(seed);
+    const ecBytes = utf8ToBytesEc(seed);
+    expect(bytes).toEqual(ecBytes);
+    const hex = bytesToHex(bytes);
+    const ecHex = bytesToHex(ecBytes);
+    expect(hex).toEqual(ecHex);
+  },
+);

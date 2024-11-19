@@ -96,7 +96,8 @@
   "dependencies": {
     "crypto-js": "^4.2.0",
     "eth-crypto": "2.6.0",
-    "ethereum-cryptography": "3.0.0"
+    "ethereum-cryptography": "3.0.0",
+    "jest-environment-jsdom": "^29.7.0"
   },
   "packageManager": "yarn@1.22.22"
 }

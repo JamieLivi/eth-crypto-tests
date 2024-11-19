@@ -17,12 +17,14 @@ import { wordlist } from 'ethereum-cryptography/bip39/wordlists/english.js';
 
 const ethCryptokeccak256 = hash.keccak256;
 
-const testArray = Array.from({ length: 20 }, (_, i) => i + 1);
+const testArray = Array.from({ length: 30 }, () => {
+  const { publicKey, privateKey } = createIdentity();
+  return [publicKey, privateKey];
+});
 
 test.each(testArray)(
-  'should test all cryptographic functions for equivalence with eth-crypto using unique values #%i',
-  async () => {
-    const { publicKey, privateKey } = createIdentity();
+  'should test all cryptographic functions for equivalence with eth-crypto using key pair %s %s',
+  async (publicKey, privateKey) => {
     const ethCryptoPublicKey = ethCryptoPublicKeyByPrivateKey(privateKey);
     expect(publicKey).toEqual(ethCryptoPublicKey);
 
