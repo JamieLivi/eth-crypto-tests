@@ -69,14 +69,38 @@ describe('util functions', () => {
   });
 });
 
+describe('utf8ToBytes tests', () => {
+  it('should convert a simple string to bytes', () => {
+    const str = 'abc';
+    const expected = new Uint8Array([97, 98, 99]);
+    expect(utf8ToBytes(str)).toEqual(expected);
+  });
+
+  it('should convert a string with surrogate pairs to bytes', () => {
+    const str = '𠜎';
+    const expected = new Uint8Array([240, 160, 156, 142]);
+    expect(utf8ToBytes(str)).toEqual(expected);
+  });
+
+  it('should throw an error if the input is not a string', () => {
+    // @ts-expect-error testing incorrect type
+    expect(() => utf8ToBytes(123)).toThrow('utf8ToBytes expected string, got number');
+  });
+
+  it('should handle an empty string', () => {
+    const str = '';
+    const expected = new Uint8Array([]);
+    expect(utf8ToBytes(str)).toEqual(expected);
+  });
+});
+
 const testArray = Array.from({ length: 30 }, () => {
   return bip39.generateMnemonic(wordlist);
 });
 
 test.each(testArray)(
   'should test to see if the local utf8ToBytes function returns same result as utf8ToBytes from ethereum-cryptography for phrase %s',
-  () => {
-    const seed = bip39.generateMnemonic(wordlist, 256);
+  (seed) => {
     const bytes = utf8ToBytes(seed);
     const ecBytes = utf8ToBytesEc(seed);
     expect(bytes).toEqual(ecBytes);
