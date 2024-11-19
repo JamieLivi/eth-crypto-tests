@@ -4,8 +4,10 @@
 node_modules
 dist
 ./dist
-coverage
 **/temp
 /.vscode/*
 .npmrc
+
 results
+coverage/*
+!coverage/index.html

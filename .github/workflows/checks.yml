@@ -3,7 +3,9 @@ name: checks
 on:
   push:
 
-permissions: write-all
+permissions:
+  pages: write
+  id-token: write
 
 jobs:
   lint:
@@ -49,35 +51,15 @@ jobs:
         with:
           branches: '*'
 
-      - name: Upload Coverage
-        id: coverage-deployment
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: coverage/lcov-report
-          name: coverage
+      - name: Move results to coverage folder
+        run: mv results coverage
 
       - name: Upload Results
-        id: results-deployment
+        id: deployment
         uses: actions/upload-pages-artifact@v3
         with:
-          path: results
+          path: coverage
           name: results
-
-  deploy-coverage:
-    needs: tests
-    runs-on: ubuntu-latest
-
-    environment:
-      name: github-pages
-      url: ${{ steps.coverage-deployment.outputs.page_url }}
-
-    steps:
-      - name: Deploy to GitHub Pages
-        id: coverage-deployment
-        uses: actions/deploy-pages@v4
-        continue-on-error: true
-        with:
-          artifact_name: coverage
 
   deploy-results:
     needs: tests
@@ -85,11 +67,11 @@ jobs:
 
     environment:
       name: github-pages
-      url: ${{ steps.results-deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Deploy to GitHub Pages
-        id: results-deployment
+        id: deployment
         uses: actions/deploy-pages@v4
         continue-on-error: true
         with:
