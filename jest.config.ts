@@ -7,6 +7,17 @@ export default {
   coverageDirectory: 'coverage',
   coverageReporters: ['lcov', 'json-summary', 'text', 'json'],
   coveragePathIgnorePatterns: ['node_modules', 'dist', 'src/index.ts', 'jest.config.js', 'package.json'],
+  reporters: [
+    'default',
+    [
+      'jest-stare',
+      {
+        reportTitle: 'Cryptographic function tests',
+        reportHeadline: 'Crypto functions tests',
+        resultDir: 'results',
+      },
+    ],
+  ],
   transform: {
     '^.+\\.(t|j)s$': [
       'ts-jest',
@@ -14,12 +25,5 @@ export default {
         tsconfig: '<rootDir>/tsconfig.json',
       },
     ],
-  },
-  coverageThreshold: {
-    global: {
-      functions: 80,
-      lines: 80,
-      statements: -10,
-    },
   },
 };

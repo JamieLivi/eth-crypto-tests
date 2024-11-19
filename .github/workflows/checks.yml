@@ -49,24 +49,47 @@ jobs:
         with:
           branches: '*'
 
-      - name: Upload assets
-        id: deployment
+      - name: Upload Coverage
+        id: coverage-deployment
         uses: actions/upload-pages-artifact@v3
         with:
           path: coverage/lcov-report
+          name: coverage
+
+      - name: Upload Results
+        id: results-deployment
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: results
           name: results
 
-  deploy-pages:
+  deploy-coverage:
     needs: tests
     runs-on: ubuntu-latest
 
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.coverage-deployment.outputs.page_url }}
 
     steps:
       - name: Deploy to GitHub Pages
-        id: deployment
+        id: coverage-deployment
+        uses: actions/deploy-pages@v4
+        continue-on-error: true
+        with:
+          artifact_name: coverage
+
+  deploy-results:
+    needs: tests
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.results-deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: results-deployment
         uses: actions/deploy-pages@v4
         continue-on-error: true
         with:
