@@ -70,6 +70,7 @@
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/crypto-js": "^4.2.2",
     "@types/jest": "^29.5.12",
+    "@types/lodash": "^4.17.13",
     "@types/node": "^20.14.8",
     "@typescript-eslint/eslint-plugin": "^6.4.0",
     "@typescript-eslint/parser": "^7.16.0",
@@ -97,7 +98,8 @@
     "crypto-js": "^4.2.0",
     "eth-crypto": "2.6.0",
     "ethereum-cryptography": "3.0.0",
-    "jest-environment-jsdom": "^29.7.0"
+    "jest-environment-jsdom": "^29.7.0",
+    "lodash": "^4.17.21"
   },
   "packageManager": "yarn@1.22.22"
 }

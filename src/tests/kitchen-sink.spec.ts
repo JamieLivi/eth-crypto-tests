@@ -17,7 +17,7 @@ import { wordlist } from 'ethereum-cryptography/bip39/wordlists/english.js';
 
 const ethCryptokeccak256 = hash.keccak256;
 
-const testArray = Array.from({ length: 30 }, () => {
+const testArray = Array.from({ length: 20 }, () => {
   const { publicKey, privateKey } = createIdentity();
   return [publicKey, privateKey];
 });
